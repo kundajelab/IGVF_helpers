@@ -43,24 +43,21 @@ def make_pseudobulks(
     }
     print(f"Created {open_outfs.keys()} files")
 
-    # create set of barcodes to make matching to barcodes in file easier
+    # create set of barcodes for checking whether barcodes exist in file
     all_barcodes = set(barcodes_to_clusters.keys())
     barcode_counter = 0
     filtered_counter = 0
     with gzip.open(fragments_in, "r") as frag_in:
         for line_bytes in frag_in:
+            #TODO: skip header line; also check if lines need to be decoded from byte -> str
             line = line_bytes.decode()
-            # check that line is split by '\t'; otherwise it might be a header
-            if len(line.split("\t")) != 5:
-                # print(f"Header line: {line}")
-                continue
+            # TODO: remove IGVF measurement accession from barcode; check that these are correct cols
             chrom, start, end, barcode, num_frags = line.rstrip("\n").split("\t")
+            # check if barcode in file
             if barcode not in all_barcodes:
-                # print(f"Barcode filtered: {barcode}")
                 filtered_counter += 1
                 continue
             cluster_num = barcodes_to_clusters[barcode]
-            # print(f"Wrote barcode {barcode}")
             barcode_counter += 1
             open_outfs[cluster_num].write(line)
 
