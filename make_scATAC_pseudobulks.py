@@ -22,7 +22,7 @@ def make_pseudobulks(
     # make barcode dictionary
     barcodes_to_clusters: Dict = {}
     with annotations_in.open("r") as f_in:
-        csv_reader = csv.DictReader(f_in, delimiter=",")
+        csv_reader = csv.DictReader(f_in, delimiter="\t")
         for line in csv_reader:
             barcodes_to_clusters[line["cellBC_formatted"]] = line[cluster_col]
 
@@ -51,9 +51,8 @@ def make_pseudobulks(
         for line_bytes in frag_in:
             #TODO: skip header line; also check if lines need to be decoded from byte -> str
             line = line_bytes.decode()
-            # TODO: remove IGVF measurement accession from barcode; check that these are correct cols
-            # TODO: keep measurement accession in final fragment file (or add another column?)
-            chrom, start, end, barcode, num_frags = line.rstrip("\n").split("\t")
+            chrom, start, end, barcode_with_expt, num_frags = line.rstrip("\n").split("\t")
+            barcode, expt = barcode_with_expt.split('_')
             # check if barcode in file
             if barcode not in all_barcodes:
                 filtered_counter += 1
@@ -66,8 +65,8 @@ def make_pseudobulks(
     for open_outf in open_outfs.values():
         open_outf.close()
 
-    print("Total barcodes sent to pseudobulks: {barcode_counter}")
-    print("Total filtered barcodes: {filtered_counter}")
+    print(f"Total barcodes sent to pseudobulks: {barcode_counter}")
+    print(f"Total filtered barcodes: {filtered_counter}")
 
 
 if __name__ == "__main__":
@@ -96,5 +95,5 @@ if __name__ == "__main__":
         annotations_in=args.annotations_in,
         cluster_col=args.cluster_col,
         outpath=args.outpath,
-        fragments_in=args.fragments_filename,
+        fragments_in=args.fragments_in,
     )
