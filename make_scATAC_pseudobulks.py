@@ -52,6 +52,7 @@ def make_pseudobulks(
             #TODO: skip header line; also check if lines need to be decoded from byte -> str
             line = line_bytes.decode()
             # TODO: remove IGVF measurement accession from barcode; check that these are correct cols
+            # TODO: keep measurement accession in final fragment file (or add another column?)
             chrom, start, end, barcode, num_frags = line.rstrip("\n").split("\t")
             # check if barcode in file
             if barcode not in all_barcodes:
