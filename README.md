@@ -24,3 +24,11 @@ bash download_files.sh \
  --igvffs_in IGVFDS6955JCTX.json \
  --outdir .
 ```
+6. Run pseudobulking on scATAC. Example:
+```
+python make_scATAC_pseudobulks.py \
+ --annotations_in <path_to_annotations.tsv> \
+ --cluster_col <name_of_col_with_clustering_ID> \
+ --outpath <where_to_save_file> \
+ --fragments_in <path_to_downloaded_fragments.bed.gz>
+```
